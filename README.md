@@ -20,3 +20,28 @@ The sequence repeats continuously.
 ---
 
 ## State Diagram
+## State Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> NS_G
+    NS_G --> NS_Y : 5 ticks
+    NS_Y --> EW_G : 2 ticks
+    EW_G --> EW_Y : 5 ticks
+    EW_Y --> NS_G : 2 ticks
+
+Verification
+
+The 1 Hz tick was verified by:
+
+Simulation: Checked waveform shows a pulse every second.
+
+Hardware Test: Connected tick signal to an LED, observed toggling once per second.
+
+Notes
+
+The Moore machine is synchronous with active-high reset.
+
+Only one light per road is active at a time.
+
+Phase durations can be easily adjusted by changing the tick counter limits.
