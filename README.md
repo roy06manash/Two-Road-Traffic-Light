@@ -20,7 +20,6 @@ The sequence repeats continuously.
 ---
 
 ## State Diagram
-## State Diagram
 
 ```mermaid
 stateDiagram-v2
@@ -29,9 +28,48 @@ stateDiagram-v2
     NS_Y --> EW_G : 2 ticks
     EW_G --> EW_Y : 5 ticks
     EW_Y --> NS_G : 2 ticks
+Notes:
 
+Only one of {G, Y, R} is high for each road at any time.
+
+Transitions occur on the rising edge of the 1 Hz tick.
+
+Waveform
+The waveform represents light outputs over time (in ticks):
+
+Time (ticks)	0	1	2	3	4	5	6	7	8	9	10	11	12	13
+NS Green	1	1	1	1	1	0	0	0	0	0	0	0	0	0
+NS Yellow	0	0	0	0	0	1	1	0	0	0	0	0	0	0
+NS Red	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+EW Green	0	0	0	0	0	0	0	0	0	0	1	1	1	1
+EW Yellow	0	0	0	0	0	0	0	0	0	0	0	0	1	1
+EW Red	1	1	1	1	1	1	1	1	1	1	0	0	0	0
+
+Generating the 1 Hz Tick
+Clock Source
+System clock frequency: 50 MHz
+
+Frequency Divider
+Divide by 50,000,000 to generate 1 Hz tick
+
+Example Verilog Implementation:
+
+verilog
+Copy
+Edit
+reg [25:0] counter;
+reg tick_1Hz;
+
+always @(posedge clk) begin
+    if (counter == 49999999) begin
+        tick_1Hz <= 1;
+        counter <= 0;
+    end else begin
+        tick_1Hz <= 0;
+        counter <= counter + 1;
+    end
+end
 Verification
-
 The 1 Hz tick was verified by:
 
 Simulation: Checked waveform shows a pulse every second.
@@ -39,7 +77,6 @@ Simulation: Checked waveform shows a pulse every second.
 Hardware Test: Connected tick signal to an LED, observed toggling once per second.
 
 Notes
-
 The Moore machine is synchronous with active-high reset.
 
 Only one light per road is active at a time.
